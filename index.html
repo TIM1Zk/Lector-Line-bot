@@ -73,8 +73,7 @@
 
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
-        // *** 1. เอา Config จาก Firebase มาใส่ตรงนี้ ***
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        // ตรวจสอบ projectId ให้ตรงกับใน Firebase Console ของคุณนะครับ
         const firebaseConfig = {
             apiKey: "AIzaSyArcmc3ABFhDxu6AnHSaFaxqXRcBFOTwy8",
             authDomain: "exam-9c16e.firebaseapp.com",
@@ -85,19 +84,15 @@
             appId: "1:527012067481:web:a1b70956970aae44b46008",
             measurementId: "G-LQH51FJ44Q"
         };
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // 2. เริ่มต้น LIFF
         async function initLiff() {
             try {
-                // นำ LIFF ID ที่คุณเพิ่งได้มาใส่ตรงนี้
                 await liff.init({ liffId: "2009453734-jB8iF05Y" });
-
                 if (!liff.isLoggedIn()) {
                     liff.login();
-                } else {
-                    console.log("LIFF initialized and logged in");
                 }
             } catch (error) {
                 console.error('LIFF init error', error);
@@ -110,20 +105,27 @@
             const date = document.getElementById('date').value;
             const time = document.getElementById('time').value;
 
-            if (!subject || !date || !time) return alert("กรุณากรอกข้อมูลให้ครบ");
+            if (!subject || !date || !time) {
+                return alert("กรุณากรอกข้อมูลให้ครบ");
+            }
 
             try {
+                // ดึง Profile เพื่อเอา UserId
                 const profile = await liff.getProfile();
+                const userId = profile.userId;
+
                 await db.collection("exams").add({
-                    userId: profile.userId,
+                    userId: userId,
                     subject: subject,
                     examDate: date,
                     examTime: time,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
+
                 alert("บันทึกตารางสอบสำเร็จ!");
-                liff.closeWindow();
+                liff.closeWindow(); // ปิดหน้าต่าง LIFF ทันทีเมื่อบันทึกเสร็จ
             } catch (e) {
+                console.error("Error: ", e);
                 alert("เกิดข้อผิดพลาด: " + e.message);
             }
         }
