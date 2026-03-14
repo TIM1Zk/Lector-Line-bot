@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,14 +8,60 @@
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-firestore-compat.js"></script>
     <style>
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
-        h2 { color: #00B900; text-align: center; margin-bottom: 1.5rem; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 12px; background-color: #00B900; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        button:active { background-color: #009900; }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #00B900;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00B900;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:active {
+            background-color: #009900;
+        }
     </style>
 </head>
+
 <body>
     <div class="card">
         <h2>📝 เพิ่มตารางสอบ</h2>
@@ -27,27 +74,30 @@
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
         // *** 1. เอา Config จาก Firebase มาใส่ตรงนี้ ***
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyArcmc3ABFhDxu6AnHSaFaxqXRcBFOTwy8",
-  authDomain: "exam-9c16e.firebaseapp.com",
-  databaseURL: "https://exam-9c16e-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "exam-9c16e",
-  storageBucket: "exam-9c16e.firebasestorage.app",
-  messagingSenderId: "527012067481",
-  appId: "1:527012067481:web:a1b70956970aae44b46008",
-  measurementId: "G-LQH51FJ44Q"
-};
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyArcmc3ABFhDxu6AnHSaFaxqXRcBFOTwy8",
+            authDomain: "exam-9c16e.firebaseapp.com",
+            databaseURL: "https://exam-9c16e-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "exam-9c16e",
+            storageBucket: "exam-9c16e.firebasestorage.app",
+            messagingSenderId: "527012067481",
+            appId: "1:527012067481:web:a1b70956970aae44b46008",
+            measurementId: "G-LQH51FJ44Q"
+        };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         // 2. เริ่มต้น LIFF
         async function initLiff() {
             try {
-                // *** 2. เอา LIFF ID จาก LINE Developers มาใส่ตรงนี้ ***
-                await liff.init({ liffId: "YOUR_LIFF_ID" });
+                // นำ LIFF ID ที่คุณเพิ่งได้มาใส่ตรงนี้
+                await liff.init({ liffId: "2009453734-jB8iF05Y" });
+
                 if (!liff.isLoggedIn()) {
                     liff.login();
+                } else {
+                    console.log("LIFF initialized and logged in");
                 }
             } catch (error) {
                 console.error('LIFF init error', error);
@@ -60,7 +110,7 @@ const firebaseConfig = {
             const date = document.getElementById('date').value;
             const time = document.getElementById('time').value;
 
-            if(!subject || !date || !time) return alert("กรุณากรอกข้อมูลให้ครบ");
+            if (!subject || !date || !time) return alert("กรุณากรอกข้อมูลให้ครบ");
 
             try {
                 const profile = await liff.getProfile();
@@ -72,11 +122,12 @@ const firebaseConfig = {
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 alert("บันทึกตารางสอบสำเร็จ!");
-                liff.closeWindow(); 
+                liff.closeWindow();
             } catch (e) {
                 alert("เกิดข้อผิดพลาด: " + e.message);
             }
         }
     </script>
 </body>
+
 </html>
